@@ -24,6 +24,14 @@
 // 🔹 Return: Docker image tag (e.g. myorg/myapp:abcd1234-15)
 // -------------------------------------------------------
 
+// vars/buildImage.groovy
+// -------------------------------------------------------
+// 📌 Function: buildImage
+// 🔹 Use: Docker image build karta hai aur commit hash + build number ke sath tag banata hai.
+// 🔹 Safe: Error aane par pipeline fail kar deta hai.
+// 🔹 Return: Docker image tag (e.g. myorg/myapp:abcd1234-15)
+// -------------------------------------------------------
+
 def call(Map args = [:]) {
     if (!args.image) error "buildImage: 'image' argument required"
     def image = args.image
@@ -37,10 +45,24 @@ def call(Map args = [:]) {
 
     echo "🔧 Building image ${tag} using ${dockerfile}"
 
-    sh """
-  
-      docker build -f ${dockerfile} -t ${tag} ${buildArgs.join(' ')} .
-    """
+    // buildx prefer karo, fallback docker build pe
+    try {
+        sh """
+          docker buildx build \
+            -f ${dockerfile} \
+            -t ${tag} \
+            ${buildArgs.join(' ')} \
+            --load .
+        """
+    } catch (Exception e) {
+        echo "⚠️ buildx failed, falling back to legacy docker build"
+        sh """
+          docker build \
+            -f ${dockerfile} \
+            -t ${tag} \
+            ${buildArgs.join(' ')} .
+        """
+    }
 
     // IMAGE_TAG ko environment variable bana do taaki agli stages use kar saken
     env.IMAGE_TAG = tag
