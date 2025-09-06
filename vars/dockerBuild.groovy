@@ -28,3 +28,65 @@ def call(Map args = [:]) {
     env.IMAGE_TAG = tag
     return tag
 }
+
+
+
+
+// @Library('shared-lib') _   // 📌 shared library use kar rahe hain (Manage Jenkins me add karna hota hai)
+
+// pipeline {
+//   agent { label 'docker-builder' } // 📌 Jenkins agent jisme docker installed hai
+
+//   environment {
+//     GIT_CRED_ID    = 'pass'       // 📌 GitHub repo ke liye Jenkins credentials
+//     DOCKER_CRED_ID = 'docker1'    // 📌 Docker registry ke liye credentials
+//   }
+
+//   stages {
+//     stage('Checkout Code') {
+//       steps {
+//         // 📌 GitHub se code checkout karna
+//         checkout([$class: 'GitSCM',
+//           branches: [[name: '*/main']],
+//           userRemoteConfigs: [[url: 'https://github.com/devanshlodh666/ecom.git', credentialsId: env.GIT_CRED_ID]]
+//         ])
+//       }
+//     }
+
+//     stage('Build Docker Image') {
+//       steps {
+//         script {
+//           // 📌 Image build karna (tag: imageName:commit-buildNo)
+//           def tag = buildImage(image: 'devanshlodhi/djangoapp', dockerfile: 'Dockerfile')
+//           echo "✅ Built image: ${tag}"
+//         }
+//       }
+//     }
+
+//     stage('Push Docker Image') {
+//       steps {
+//         script {
+//           // 📌 Build ke baad image push karna
+//           def toPush = env.IMAGE_TAG ?: error("IMAGE_TAG not set")
+//           pushImage(imageTag: toPush, dockerCredsId: env.DOCKER_CRED_ID, removeLocal: true)
+//           echo "✅ Image pushed successfully"
+//         }
+//       }
+//     }
+
+//     stage('Deploy to K8s') {
+//       steps {
+//         script {
+//           // 📌 Deployment example (use IMAGE_TAG for update)
+//           sh "kubectl set image deployment/ecom ecom=${env.IMAGE_TAG} -n production --record"
+//           echo "🚀 Deployed ${env.IMAGE_TAG} to production"
+//         }
+//       }
+//     }
+//   }
+
+//   post {
+//     success { echo "🎉 Pipeline Success!" }
+//     failure { echo "❌ Pipeline Failed!" }
+//   }
+// }
