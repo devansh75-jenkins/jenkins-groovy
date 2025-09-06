@@ -13,7 +13,7 @@ def call(String branch = 'main', String url, String credId = null) {
 
 
  // Private repo
-// cloneOrPullRepo('main', 'https://github.com/your-org/private-repo.git', 'github-cred-id')
+// gitClone('main', 'https://github.com/your-org/private-repo.git', 'github-cred-id')
 // Public repo
-// cloneOrPullRepo('main', 'https://github.com/your-org/public-repo.git')
+// gitClone('main', 'https://github.com/your-org/public-repo.git')
  
