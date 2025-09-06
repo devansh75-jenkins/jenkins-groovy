@@ -6,6 +6,7 @@
 // 🔹 Cleanup: Temp Docker config delete karta hai login ke baad.
 // -------------------------------------------------------
 
+// vars/pushImage.groovy
 def call(Map args = [:]) {
     if (!args.imageTag) error "pushImage: 'imageTag' argument required"
     if (!args.dockerCredsId) error "pushImage: 'dockerCredsId' argument required"
@@ -17,23 +18,20 @@ def call(Map args = [:]) {
     withCredentials([usernamePassword(credentialsId: credsId,
                                       usernameVariable: 'DOCKER_USER',
                                       passwordVariable: 'DOCKER_PASS')]) {
-        sh '''
+        sh """
           set -euo pipefail
-          # 🔒 Temporary docker config bana rahe hain (safe login)
-          DOCKER_TMP=$(mktemp -d /tmp/docker-cred-XXXXXX)
-          export DOCKER_CONFIG="$DOCKER_TMP"
+          DOCKER_TMP=\$(mktemp -d /tmp/docker-cred-XXXXXX)
+          export DOCKER_CONFIG="\$DOCKER_TMP"
 
-          echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-          echo "✅ Docker login successful (temp config: $DOCKER_CONFIG)"
+          echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
+          echo "✅ Docker login successful (temp config: \$DOCKER_CONFIG)"
 
-          # 📤 Push image
-          docker push ''' + imageTag + '''
+          docker push ${imageTag}
 
-          # 🧹 Cleanup docker config
-          rm -rf "$DOCKER_CONFIG"
+          rm -rf "\$DOCKER_CONFIG"
 
-          # 🧹 Optionally local image remove
-          ''' + (removeLocal ? "docker rmi -f ${imageTag} || true" : "echo 'Keeping local image'") + '''
-        '''
+          ${removeLocal ? "docker rmi -f ${imageTag} || true" : "echo 'Keeping local image'"}
+        """
     }
 }
+
