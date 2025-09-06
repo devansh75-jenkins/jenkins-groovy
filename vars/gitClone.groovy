@@ -9,3 +9,11 @@ def call(String branch = 'main', String url, String credId = null) {
                 url: url
         }
     }
+
+
+
+ // Private repo
+// cloneOrPullRepo('main', 'https://github.com/your-org/private-repo.git', 'github-cred-id')
+// Public repo
+// cloneOrPullRepo('main', 'https://github.com/your-org/public-repo.git')
+ 
