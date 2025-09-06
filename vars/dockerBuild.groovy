@@ -5,7 +5,7 @@ def call(Map args = [:]) {
   // immutable tag: commit sha + build number
   def sha = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
   def tag = "${args.image}:${sha}-${env.BUILD_NUMBER}"
-  sh "docker build -f ${args.dockerfile} -t ${tag} ."
+  sh "docker build -t ${tag} ."
   env.IMAGE_TAG = tag          // make global & visible in Jenkins UI
   return tag
 }
