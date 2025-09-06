@@ -19,7 +19,7 @@ def call(Map args = [:]) {
                                       usernameVariable: 'DOCKER_USER',
                                       passwordVariable: 'DOCKER_PASS')]) {
         sh """
-          set -euo pipefail
+
           DOCKER_TMP=\$(mktemp -d /tmp/docker-cred-XXXXXX)
           export DOCKER_CONFIG="\$DOCKER_TMP"
 
