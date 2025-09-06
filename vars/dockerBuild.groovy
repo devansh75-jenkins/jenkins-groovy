@@ -20,8 +20,7 @@ def call(Map args = [:]) {
     echo "🔧 Building image ${tag} using ${dockerfile}"
 
     sh """
-      #!/bin/bash
-      set -euo pipefail
+  
       docker build -f ${dockerfile} -t ${tag} ${buildArgs.join(' ')} .
     """
 
